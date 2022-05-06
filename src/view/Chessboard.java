@@ -317,4 +317,5 @@ public class Chessboard extends JComponent {
     }
 
 }
+//测试是否完成修改
 

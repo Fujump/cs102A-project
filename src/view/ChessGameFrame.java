@@ -6,6 +6,8 @@ import model.ChessColor;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.FileWriter;
+import java.io.IOException;
 
 /**
  * 这个类表示游戏过程中的整个游戏界面，是一切的载体
@@ -94,6 +96,8 @@ public class ChessGameFrame extends JFrame {
             int n=JOptionPane.showConfirmDialog(null,"Are you sure to store","Confirm",JOptionPane.YES_NO_OPTION);
             if (n==JOptionPane.YES_OPTION){
                 System.out.println(chessboard.theStore());
+                String a=chessboard.theStore();
+                saveAsFileWriter(chessboard.theStore());
             }
         });
     }
@@ -112,5 +116,25 @@ public class ChessGameFrame extends JFrame {
             gameController.loadGameFromFile(path);
         });
     }
+
+    private static   String savefile = "E:\\test.txt";
+    private static void saveAsFileWriter(String content) {
+
+        FileWriter fwriter = null;
+        try {
+            fwriter = new FileWriter(savefile);
+            fwriter.write(content);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } finally {
+            try {
+                fwriter.flush();
+                fwriter.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
 
 }

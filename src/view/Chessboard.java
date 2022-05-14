@@ -1,11 +1,17 @@
 package view;
 
 
+import javazoom.jl.decoder.JavaLayerException;
+import javazoom.jl.player.Player;
 import model.*;
 import controller.ClickController;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -14,6 +20,8 @@ import java.util.List;
  */
 public class Chessboard extends JComponent {
     private int a=1;
+    private boolean loadTest=true;
+    ArrayList<String> storeHuiQI=new ArrayList<>();
     /**
      * CHESSBOARD_SIZE： 棋盘是8 * 8的
      * <br>
@@ -28,37 +36,49 @@ public class Chessboard extends JComponent {
     private static final int CHESSBOARD_SIZE = 8;
 
     private final ChessComponent[][] chessComponents = new ChessComponent[CHESSBOARD_SIZE][CHESSBOARD_SIZE];
-    private ChessColor currentColor = ChessColor.BLACK;
+    private ChessColor currentColor = ChessColor.WHITE;
     //all chessComponents in this chessboard are shared only one model controller
     private final ClickController clickController = new ClickController(this);
     private final int CHESS_SIZE;
-    private ChessComponent[] chessForStore=new ChessComponent[32];
-
     private LinkedList<Record> huiQi=new LinkedList<>();
-
-
     private JLabel lable;
+
+
+    private JLabel jb;
+    private boolean theInt=true;
+    private boolean theILength=true;
+    private boolean theChessName=true;
+
+
+
+
+
+
+
+
+
+
+
+
 
     public void setLable(JLabel lable) {
         this.lable = lable;
+
     }
     public void setRestarted(){
-
-        System.out.println("reStarted");
         initiateEmptyChessboard();
         Init();
-        System.out.println("After restarted");
-
     }
 
     public Chessboard(int width, int height) {
         setLayout(null); // Use absolute layout.
         setSize(width, height);
         CHESS_SIZE = width / 8;
-        System.out.printf("chessboard size = %d, chess size = %d\n", width, CHESS_SIZE);
-
+//        System.out.printf("chessboard size = %d, chess size = %d\n", width, CHESS_SIZE); //取消打印数据
         initiateEmptyChessboard();
         Init();
+
+
     }
     public void Init(){
         // FIXME: Initialize chessboard for testing only.
@@ -89,11 +109,13 @@ public class Chessboard extends JComponent {
             initPawnOnBoard(1,i,ChessColor.BLACK);
 
         }
+        storeHuiQI.add(theStore());
     }
 
 
 
     public void Restarted(){
+        storeHuiQI.clear();
         a=1;
         removeAll();
         initiateEmptyChessboard();
@@ -124,7 +146,8 @@ public class Chessboard extends JComponent {
             initPawnOnBoard(1,i,ChessColor.BLACK);
 
         }
-        lable.setText("Turn For Black");
+        lable.setText("Turn For White");
+        storeHuiQI.add(theStore());
 
     }
 
@@ -152,6 +175,12 @@ public class Chessboard extends JComponent {
 
     public void swapChessComponents(ChessComponent chess1, ChessComponent chess2) {
         // Note that chess1 has higher priority, 'destroys' chess2 if exists.
+
+        SoundOfChess play0 = new SoundOfChess("D:\\新建文件夹\\下棋.mp3");
+        play0.start();
+
+
+
         if (!(chess2 instanceof EmptySlotComponent)) {
 //            Record record=new Record();
 //            record.setChessComponent(chess1);
@@ -177,13 +206,17 @@ public class Chessboard extends JComponent {
         chess1.repaint();
         chess2.repaint();
 
+
         a++;
         if (a%2==0){
-            lable.setText("Turn For White");
-        }
-        else {
             lable.setText("Turn For Black");
         }
+        else {
+            lable.setText("Turn For White");
+        }
+
+        storeHuiQI.add(theStore());
+//        System.out.println(theStore());  //打印存储文件
 
     }
 
@@ -245,8 +278,143 @@ public class Chessboard extends JComponent {
     }
 
     public void loadGame(List<String> chessData) {
-        chessData.forEach(System.out::println);
+        boolean test = theLoadTest( chessData);
+
+        if(!test){
+                loadTest=false;
+        }
+        else {
+            loadTest=true;
+            initiateEmptyChessboard();
+//            chessData.forEach(System.out::println);
+            for (int i = 0; i < 8; i++) {
+                for (int j = 0; j < 8; j++) {
+                    char theSimpleChess = chessData.get(i).charAt(j);
+                    ChessComponent chess = chessComponents[i][j];
+                    ChessboardPoint point = new ChessboardPoint(i, j);
+
+                    if (theSimpleChess == 'R') {
+                        initRookOnBoard(i, j, ChessColor.BLACK);
+                    }
+                    if (theSimpleChess == 'K') {
+                        initKingOnBoard(i, j, ChessColor.BLACK);
+                    }
+                    if (theSimpleChess == 'Q') {
+                        initQueenOnBoard(i, j, ChessColor.BLACK);
+                    }
+                    if (theSimpleChess == 'N') {
+                        initKnightOnBoard(i, j, ChessColor.BLACK);
+                    }
+                    if (theSimpleChess == 'B') {
+                        initBishopOnBoard(i, j, ChessColor.BLACK);
+                    }
+                    if (theSimpleChess == 'P') {
+                        initPawnOnBoard(i, j, ChessColor.BLACK);
+                    }
+
+
+                    if (theSimpleChess == 'r') {
+                        initRookOnBoard(i, j, ChessColor.WHITE);
+                    }
+                    if (theSimpleChess == 'k') {
+                        initKingOnBoard(i, j, ChessColor.WHITE);
+                    }
+                    if (theSimpleChess == 'q') {
+                        initQueenOnBoard(i, j, ChessColor.WHITE);
+                    }
+                    if (theSimpleChess == 'n') {
+                        initKnightOnBoard(i, j, ChessColor.WHITE);
+                    }
+                    if (theSimpleChess == 'b') {
+                        initBishopOnBoard(i, j, ChessColor.WHITE);
+                    }
+                    if (theSimpleChess == 'p') {
+                        initPawnOnBoard(i, j, ChessColor.WHITE);
+                    }
+                }
+            }
+            a = chessData.get(8).charAt(0) - '0';
+
+            if (a % 2 == 1) {
+                setCurrentColor(ChessColor.WHITE);
+                lable.setText("Turn For White");
+                lable.setForeground(Color.red);
+            } else {
+                setCurrentColor(ChessColor.BLACK);
+                lable.setText("Turn For Black");
+                lable.setForeground(Color.red);
+            }
+
+        }
+        storeHuiQI.add(theStore());
     }
+    public void HuiQIGame(String[] chessData) {
+
+            initiateEmptyChessboard();
+//            chessData.forEach(System.out::println);
+            for (int i = 0; i < 8; i++) {
+                for (int j = 0; j < 8; j++) {
+                    char theSimpleChess = chessData[i].charAt(j);
+
+                    ChessboardPoint point = new ChessboardPoint(i, j);
+
+                    if (theSimpleChess == 'R') {
+                        initRookOnBoard(i, j, ChessColor.BLACK);
+                    }
+                    if (theSimpleChess == 'K') {
+                        initKingOnBoard(i, j, ChessColor.BLACK);
+                    }
+                    if (theSimpleChess == 'Q') {
+                        initQueenOnBoard(i, j, ChessColor.BLACK);
+                    }
+                    if (theSimpleChess == 'N') {
+                        initKnightOnBoard(i, j, ChessColor.BLACK);
+                    }
+                    if (theSimpleChess == 'B') {
+                        initBishopOnBoard(i, j, ChessColor.BLACK);
+                    }
+                    if (theSimpleChess == 'P') {
+                        initPawnOnBoard(i, j, ChessColor.BLACK);
+                    }
+
+
+                    if (theSimpleChess == 'r') {
+                        initRookOnBoard(i, j, ChessColor.WHITE);
+                    }
+                    if (theSimpleChess == 'k') {
+                        initKingOnBoard(i, j, ChessColor.WHITE);
+                    }
+                    if (theSimpleChess == 'q') {
+                        initQueenOnBoard(i, j, ChessColor.WHITE);
+                    }
+                    if (theSimpleChess == 'n') {
+                        initKnightOnBoard(i, j, ChessColor.WHITE);
+                    }
+                    if (theSimpleChess == 'b') {
+                        initBishopOnBoard(i, j, ChessColor.WHITE);
+                    }
+                    if (theSimpleChess == 'p') {
+                        initPawnOnBoard(i, j, ChessColor.WHITE);
+                    }
+                }
+            }
+            for (int i=0;i<chessData[8].length();i++){
+            a += chessData[8].charAt(i) - '0';}
+
+            if (a % 2 == 1) {
+                setCurrentColor(ChessColor.WHITE);
+                lable.setText("Turn For White");
+                lable.setForeground(Color.red);
+            } else {
+                setCurrentColor(ChessColor.BLACK);
+                lable.setText("Turn For Black");
+                lable.setForeground(Color.red);
+            }
+
+
+    }
+
+
 
     public void setHuiQi(LinkedList<Record> huiQi) {
         this.huiQi = huiQi;
@@ -263,6 +431,7 @@ public class Chessboard extends JComponent {
         this.a = a;
     }
     public String theStore(){
+
         String theStringStore="";
         for (int i=0;i<8;i++){
             for (int j=0;j<8;j++){
@@ -315,7 +484,128 @@ public class Chessboard extends JComponent {
         theStringStore+=a;
         return theStringStore.toString();
     }
+    public boolean theLoadTest(List<String> chessData){//test the load is right or not ,
+          theILength=true;
+          theChessName=true;//contains the length 8*8 ,the a--the turn,
+          theInt=true;
+
+        if (chessData.size()!=9){
+            return  false;
+        }
+        else {
+            for (int i=0;i<8;i++){
+                if (chessData.get(i).length()!=8){
+                    theILength=false;
+                    break;
+                }
+            }
+            for(int i=0;i<chessData.get(8).length();i++){
+                int chr=chessData.get(8).charAt(i);
+
+                if (chr<48||chr>57){
+                    theInt=false;
+                    break;
+                }
+            }
+            for (int i=0;i<8;i++){
+                for(int j=0;j<8;j++){
+                    char chess=chessData.get(i).charAt(j);
+                    if (chess!='r'&&chess!='R'&&chess!='K'&&chess!='Q'&&chess!='k'&&chess!='q'&&chess!='B'&&chess!='b'&&chess!='N'&&chess!='n'&&chess!='P'&&chess!='p'&&chess!=' '){
+                        theChessName=false;
+                        break;
+                    }
+                }
+            }
+
+            if (theInt&&theILength&&theChessName){
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
+
+    }
+
+    public boolean isLoadTest() {
+        return loadTest;
+    }
+    public String ForHUi(){
+
+       int size=storeHuiQI.size();
+       if (size>=2){
+
+
+       String QianYibu=storeHuiQI.get(size-2);
+
+       storeHuiQI.remove(size-1);
+       return QianYibu;}
+      return null;
+
+    }
+
+
+    public int getIntStoreHuiQI() {
+        return storeHuiQI.size();
+    }
+
+    public String HUiFang(int a){
+        String rereview = storeHuiQI.get(a);
+
+        return rereview;
+
+
+    }
+
+    public boolean isTheInt() {
+        return theInt;
+    }
+
+    public boolean isTheILength() {
+        return theILength;
+    }
+
+    public boolean isTheChessName() {
+        return theChessName;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+class SoundOfChess extends Thread{
+    Player player;
+    String music;
+    public SoundOfChess(String file) {
+        this.music = file;
+    }
+    public void run() {
+        try {
+            play();
+        } catch (FileNotFoundException | JavaLayerException e) {
+            e.printStackTrace();
+        }
+    }
+    public void play() throws FileNotFoundException, JavaLayerException {
+        BufferedInputStream buffer = new BufferedInputStream(new FileInputStream(music));
+        player = new Player(buffer);
+        player.play();
+    }
+
+
+
+
+
+
+
+
 
 }
-//测试是否完成修改
-

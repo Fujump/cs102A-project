@@ -1,5 +1,6 @@
 package model;
 
+import controller.MoveController;
 import view.ChessboardPoint;
 import controller.ClickController;
 
@@ -37,8 +38,8 @@ public class BishopChessComponent extends ChessComponent {
         }
     }
 
-    public BishopChessComponent(ChessboardPoint chessboardPoint, Point location, ChessColor color, ClickController listener, int size) {
-        super(chessboardPoint, location, color, listener, size);
+    public BishopChessComponent(ChessboardPoint chessboardPoint, Point location, ChessColor color, ClickController listener, int size, MoveController moveController) {
+        super(chessboardPoint, location, color, listener, size,moveController);
         initiateBishopImage(color);
     }
 
@@ -66,5 +67,6 @@ public class BishopChessComponent extends ChessComponent {
             g.setColor(Color.RED);
             g.drawOval(0, 0, getWidth() , getHeight());
         }
+
     }
 }

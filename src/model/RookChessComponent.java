@@ -1,5 +1,6 @@
 package model;
 
+import controller.MoveController;
 import view.ChessboardPoint;
 import controller.ClickController;
 
@@ -60,8 +61,8 @@ public class RookChessComponent extends ChessComponent {
         }
     }
 
-    public RookChessComponent(ChessboardPoint chessboardPoint, Point location, ChessColor color, ClickController listener, int size) {
-        super(chessboardPoint, location, color, listener, size);
+    public RookChessComponent(ChessboardPoint chessboardPoint, Point location, ChessColor color, ClickController listener, int size, MoveController moveController) {
+        super(chessboardPoint, location, color, listener, size,moveController);
         initiateRookImage(color);
     }
 

@@ -1,38 +1,13 @@
 package view;
 
-import controller.ClickController;
 import controller.GameController;
 import model.ChessColor;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import java.applet.Applet;
-import java.applet.AudioClip;
 import java.awt.*;
-import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URL;
-
-import java.applet.AudioClip;
-import java.io.*;
-import java.applet.Applet;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.nio.channels.ScatteringByteChannel;
-
-import javazoom.jl.decoder.JavaLayerException;
-import javazoom.jl.player.*;
-import javazoom.jl.player.advanced.AdvancedPlayer;
-import javazoom.jl.player.advanced.PlaybackEvent;
-import javazoom.jl.player.advanced.PlaybackListener;
 
 import static java.lang.Thread.sleep;
 
@@ -92,7 +67,7 @@ public class ChessGameFrame extends JFrame {
         addChessboard();
 
 
-        ImageIcon imag=new ImageIcon("images/back5.png");
+        ImageIcon imag=new ImageIcon("./images/21.png");
 //        JLabel jb=new JLabel(imag);
 //
 //        jb.setBounds(0,0,getWidth(),getHeight());
@@ -144,11 +119,22 @@ public class ChessGameFrame extends JFrame {
     /**
      * 在游戏面板中添加标签
      */
+
+    JLabel jb=new JLabel("Round: 0");
+    jb.setLocation(HEIGTH,HEIGTH/10-9);
+
+    jb.setSize(200,40);
+      jb.setFont(new Font("Rockwell", Font.BOLD, 25));
+      jb.setForeground(chessboard.getColor());
+      add(jb);
+      chessboard.setJb(jb);
+
+
         JLabel statusLabel = new JLabel("Turn For White");
         statusLabel.setLocation(HEIGTH, HEIGTH / 10);
         statusLabel.setSize(200, 60);
-        statusLabel.setFont(new Font("Rockwell", Font.BOLD, 20));
-        statusLabel.setForeground(Color.red);
+        statusLabel.setFont(new Font("Rockwell", Font.BOLD, 25));
+        statusLabel.setForeground(chessboard.getColor());
         add(statusLabel);
         chessboard.setLable(statusLabel);
 
@@ -160,15 +146,25 @@ public class ChessGameFrame extends JFrame {
             add(button);
 
             button.addActionListener(e -> {
-//                System.out.println("Click Restart");
-                int n=JOptionPane.showConfirmDialog(null,"Are you sure to restart","Confirm",JOptionPane.YES_NO_OPTION);
-                if (n==JOptionPane.YES_OPTION){
+                if (chessboard.avoidBugChessOnChick()==false){
+                    JOptionPane.showMessageDialog(null,"请先取消选中");
+
+                }
+
+
+                else
+
+                {int n=JOptionPane.showConfirmDialog(null,"Are you sure to restart","Confirm",JOptionPane.YES_NO_OPTION);
+
+
+                    if (n==JOptionPane.YES_OPTION){
+//                    chessboard.stopClick();
                     chessboard.setCurrentColor(ChessColor.WHITE);
                     chessboard.Restarted();
 //                    System.out.printf("%d",chessboard.getA());
                     repaint();
 
-                }
+                }}
             });
 
 
@@ -270,7 +266,7 @@ public class ChessGameFrame extends JFrame {
 
                 if (returnVal == JFileChooser.APPROVE_OPTION) { //点击确定
                     boolean pathForm=true;
-                    String filepath = chooser.getSelectedFile().getAbsolutePath();
+                    String filepath = chooser.getSelectedFile().getAbsolutePath();//选择路径
 //                    System.out.println(filepath);
 //
 //                    System.out.println("You chose to open this file: " + chooser.getSelectedFile().getName());
@@ -349,6 +345,32 @@ public class ChessGameFrame extends JFrame {
 
         });
 
+
+        JButton chTH=new JButton("Change Theme");
+        chTH.setLocation(HEIGTH, HEIGTH / 10 + 560);
+        chTH.setSize(200, 60);
+        chTH.setFont(new Font("Rockwell", Font.BOLD, 20));
+        add(chTH);
+        chTH.addActionListener(e->{
+            Object[] options ={ "主题1", "主题2","默认"};
+            String s = (String) JOptionPane.showInputDialog(null,"请选择你的主题:\n", "切换", JOptionPane.PLAIN_MESSAGE, new ImageIcon("xx.png"), options, "xx");
+            if(s=="主题1"){
+                String path="./images/back2.png";
+                addChangeTheme(path);
+                chessboard.change("./images/slave.png","./images/smallYe.png");
+
+            }
+            else if(s=="主题2"){
+                String path="./images/back5.png";
+                addChangeTheme(path);
+                chessboard.change("./images/blacksmall.png","./images/smallYe.png");
+            }
+            else if (s=="默认"){
+                String path="./images/21.png";
+                addChangeTheme(path);
+                chessboard.change("./images/white11.png","./images/blacksmall.png");
+            }
+        });
     }
 
 
@@ -470,6 +492,33 @@ public class ChessGameFrame extends JFrame {
             }});
 
 }
+    public void addChangeTheme(String path){
+
+        //点击确定
+                remove(jb);
+                repaint();
+
+//                System.out.println(filepath);
+
+//                System.out.println("You chose to open this file: " + chooser.getSelectedFile().getName());
+
+//                System.out.println(path);
+
+                ImageIcon imag=new ImageIcon(path);
+
+
+                Image image=imag.getImage();
+                Image doSomImage=image.getScaledInstance(WIDTH,HEIGTH,Image.SCALE_FAST);
+                ImageIcon tureBackgroundd = new ImageIcon(doSomImage);
+
+                jb=new JLabel(tureBackgroundd);
+                jb.setBounds(0,0,getWidth(),getHeight());
+                add(jb);
+                jb.repaint();
+
+
+
+    }
 
 
 

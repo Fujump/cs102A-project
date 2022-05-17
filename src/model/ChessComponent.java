@@ -1,5 +1,6 @@
 package model;
 
+import controller.MoveController;
 import view.ChessboardPoint;
 import controller.ClickController;
 
@@ -19,6 +20,11 @@ public abstract class ChessComponent extends JComponent {
     private Image image1;
     private Image image2;
 
+    private Image image3;
+
+
+
+
     /**
      * CHESSGRID_SIZE: 主要用于确定每个棋子在页面中显示的大小。
      * <br>
@@ -29,10 +35,15 @@ public abstract class ChessComponent extends JComponent {
 
     private static final Dimension CHESSGRID_SIZE = new Dimension(1080 / 4 * 3 / 8, 1080 / 4 * 3 / 8);
     private static final Color[] BACKGROUND_COLORS = {Color.WHITE, Color.BLACK};
+
+
+    private boolean whetherMoveTo;
     /**
      * handle click event
      */
     private ClickController clickController;
+
+    private MoveController moveController;
 
     /**
      * chessboardPoint: 表示8*8棋盘中，当前棋子在棋格对应的位置，如(0, 0), (1, 0), (0, 7),(7, 7)等等
@@ -44,21 +55,27 @@ public abstract class ChessComponent extends JComponent {
     private ChessboardPoint chessboardPoint;
     protected final ChessColor chessColor;
     private boolean selected;
+    private boolean forMoveWatch;
 
-    protected ChessComponent(ChessboardPoint chessboardPoint, Point location, ChessColor chessColor, ClickController clickController, int size) {
+    protected ChessComponent(ChessboardPoint chessboardPoint, Point location, ChessColor chessColor, ClickController clickController, int size,MoveController moveController) {
         enableEvents(AWTEvent.MOUSE_EVENT_MASK);
         setLocation(location);
         setSize(size, size);
         this.chessboardPoint = chessboardPoint;
         this.chessColor = chessColor;
         this.selected = false;
+        this.forMoveWatch=false;
         this.clickController = clickController;
+        this.moveController=moveController;
         try {
-            image1=ImageIO.read(new File("./images/slave.png"));
-            image2=ImageIO.read(new File("./images/gold.png"));
+            image1=ImageIO.read(new File("./images/white11.png"));
+            image2=ImageIO.read(new File("./images/blacksmall.png"));
+//            image3=ImageIO.read(new File("./images/yellow.png"));
         }catch(Exception e) {
             e.printStackTrace();
         }
+
+        this.whetherMoveTo=false;
     }
 
     public ChessboardPoint getChessboardPoint() {
@@ -77,8 +94,32 @@ public abstract class ChessComponent extends JComponent {
         return selected;
     }
 
+    public void setImage1(Image image1) {
+        this.image1 = image1;
+    }
+
+    public void setImage2(Image image2) {
+        this.image2 = image2;
+    }
+    //    public void WheMoveTo(ChessComponent chessComponent){
+//        for(int i=0;i<8;i++){
+//            for (int j=0;j<8;j++){
+//
+//            }
+//        }
+
+//    }
+
     public void setSelected(boolean selected) {
         this.selected = selected;
+    }
+
+    public boolean isForMoveWatch() {
+        return forMoveWatch;
+    }
+
+    public void setForMoveWatch(boolean forMoveWatch) {
+        this.forMoveWatch = forMoveWatch;
     }
 
     /**
@@ -108,7 +149,22 @@ public abstract class ChessComponent extends JComponent {
 //            System.out.printf("Click [%d,%d]\n", chessboardPoint.getX(), chessboardPoint.getY());  //取消打印
             clickController.onClick(this);
         }
+
+        if (e.getID()==MouseEvent.MOUSE_ENTERED){
+
+            moveController.MoveIn(this);
+        }
+        if (e.getID()==MouseEvent.MOUSE_EXITED){
+            moveController.MoveOut(this);
+        }
     }
+
+
+
+
+
+
+
 
     /**
      * @param chessboard  棋盘
@@ -126,24 +182,34 @@ public abstract class ChessComponent extends JComponent {
      */
     public abstract void loadResource() throws IOException;
 
+
+    public Image getImage1() {
+        return image1;
+    }
+
+    public Image getImage2() {
+        return image2;
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponents(g);
+
 //        System.out.printf("repaint chess [%d,%d]\n", chessboardPoint.getX(), chessboardPoint.getY()); //取消打印
 //        Color squareColor = BACKGROUND_COLORS[(chessboardPoint.getX() + chessboardPoint.getY()) % 2];
 //        g.setColor(squareColor);
         if ((chessboardPoint.getX()+chessboardPoint.getY())%2==0){
-            g.drawImage(image1, 0,0,this.getWidth(),this.getHeight() ,this);
+            g.drawImage(image1, 0,0,this.getWidth(),this.getHeight() ,null);
         }
         else {
-            g.drawImage(image2, 0,0,this.getWidth(),this.getHeight() ,this);
+            g.drawImage(image2, 0,0,this.getWidth(),this.getHeight() ,null);
         }
-
-
-
-
-
-
-//        g.fillRect(0, 0, this.getWidth(), this.getHeight());
+        //        g.fillRect(0, 0, this.getWidth(), this.getHeight());
     }
+
+
+
+
+
+
 }

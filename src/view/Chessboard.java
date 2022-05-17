@@ -1,16 +1,20 @@
 package view;
 
 
+import controller.MoveController;
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.Player;
 import model.*;
 import controller.ClickController;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -22,6 +26,8 @@ public class Chessboard extends JComponent {
     private int a=1;
     private boolean loadTest=true;
     ArrayList<String> storeHuiQI=new ArrayList<>();
+
+    private JLabel forRound;
     /**
      * CHESSBOARD_SIZE： 棋盘是8 * 8的
      * <br>
@@ -39,9 +45,13 @@ public class Chessboard extends JComponent {
     private ChessColor currentColor = ChessColor.WHITE;
     //all chessComponents in this chessboard are shared only one model controller
     private final ClickController clickController = new ClickController(this);
+    private final MoveController moveController=new MoveController(this);
     private final int CHESS_SIZE;
     private LinkedList<Record> huiQi=new LinkedList<>();
     private JLabel lable;
+    private String pa1;
+    private String pa2;
+
 
 
     private JLabel jb;
@@ -50,16 +60,14 @@ public class Chessboard extends JComponent {
     private boolean theChessName=true;
 
 
+    private Color color;
 
 
 
 
-
-
-
-
-
-
+    public void setJb(JLabel jb) {
+        this.jb = jb;
+    }
 
     public void setLable(JLabel lable) {
         this.lable = lable;
@@ -77,6 +85,13 @@ public class Chessboard extends JComponent {
 //        System.out.printf("chessboard size = %d, chess size = %d\n", width, CHESS_SIZE); //取消打印数据
         initiateEmptyChessboard();
         Init();
+        color=new Color(10,100,255);
+
+
+        pa1="./images/white11.png";
+        pa2="./images/blacksmall.png";
+
+
 
 
     }
@@ -115,8 +130,28 @@ public class Chessboard extends JComponent {
 
 
     public void Restarted(){
+//        for(int i=0;i<8;i++){
+//            for (int j = 0; j < 8; j++) {
+//
+//                clickController.onClick();
+//
+//
+//            }
+//        }
+//        if(avoidBugChessOnChick()){
+//            for (int i=0;i<8;i++){
+//                for (int j = 0; j < 8; j++) {
+//                    chessComponents[i][j].setSelected(false);
+//                    repaint();
+//                }
+//            }
+//        }
+        stopClick();
+
         storeHuiQI.clear();
         a=1;
+
+
         removeAll();
         initiateEmptyChessboard();
         initRookOnBoard(0, 0, ChessColor.BLACK);
@@ -147,7 +182,11 @@ public class Chessboard extends JComponent {
 
         }
         lable.setText("Turn For White");
+        jb.setText("Round: 0");
         storeHuiQI.add(theStore());
+        chessboardBlock();
+
+
 
     }
 
@@ -176,8 +215,6 @@ public class Chessboard extends JComponent {
     public void swapChessComponents(ChessComponent chess1, ChessComponent chess2) {
         // Note that chess1 has higher priority, 'destroys' chess2 if exists.
 
-        SoundOfChess play0 = new SoundOfChess("D:\\新建文件夹\\下棋.mp3");
-        play0.start();
 
 
 
@@ -190,7 +227,7 @@ public class Chessboard extends JComponent {
 //            huiQi.add(record);
             remove(chess2);
 
-            add(chess2 = new EmptySlotComponent(chess2.getChessboardPoint(), chess2.getLocation(), clickController, CHESS_SIZE));
+            add(chess2 = new EmptySlotComponent(chess2.getChessboardPoint(), chess2.getLocation(), clickController, CHESS_SIZE,moveController));
         }
         chess1.swapLocation(chess2);
         int row1 = chess1.getChessboardPoint().getX(), col1 = chess1.getChessboardPoint().getY();
@@ -202,7 +239,10 @@ public class Chessboard extends JComponent {
 //        record.setStart(chess1.getChessboardPoint());
 //        record.setEnd(chess2.getChessboardPoint());
 //        record.setBeingEaten(chess2); huiQi.add(record);
+        SoundOfChess play0= new SoundOfChess("./Music/ChessSound.mp3");
+        chessboardBlock();
 
+        play0.start();
         chess1.repaint();
         chess2.repaint();
 
@@ -214,6 +254,7 @@ public class Chessboard extends JComponent {
         else {
             lable.setText("Turn For White");
         }
+        jb.setText("Round: "+(a)/2);
 
         storeHuiQI.add(theStore());
 //        System.out.println(theStore());  //打印存储文件
@@ -223,7 +264,7 @@ public class Chessboard extends JComponent {
     public void initiateEmptyChessboard() {
         for (int i = 0; i < chessComponents.length; i++) {
             for (int j = 0; j < chessComponents[i].length; j++) {
-                putChessOnBoard(new EmptySlotComponent(new ChessboardPoint(i, j), calculatePoint(i, j), clickController, CHESS_SIZE));
+                putChessOnBoard(new EmptySlotComponent(new ChessboardPoint(i, j), calculatePoint(i, j), clickController, CHESS_SIZE,moveController));
             }
         }
     }
@@ -235,32 +276,32 @@ public class Chessboard extends JComponent {
     }
 
     private void initRookOnBoard(int row, int col, ChessColor color) {
-        ChessComponent chessComponent = new RookChessComponent(new ChessboardPoint(row, col), calculatePoint(row, col), color, clickController, CHESS_SIZE);
+        ChessComponent chessComponent = new RookChessComponent(new ChessboardPoint(row, col), calculatePoint(row, col), color, clickController, CHESS_SIZE,moveController);
         chessComponent.setVisible(true);
         putChessOnBoard(chessComponent);
     }
     private void initBishopOnBoard(int row,int col, ChessColor color){
-        ChessComponent chessComponent = new BishopChessComponent(new ChessboardPoint(row,col),calculatePoint(row,col),color,clickController,CHESS_SIZE);
+        ChessComponent chessComponent = new BishopChessComponent(new ChessboardPoint(row,col),calculatePoint(row,col),color,clickController,CHESS_SIZE,moveController);
         chessComponent.setVisible(true);
         putChessOnBoard(chessComponent);
     }
     private void initKnightOnBoard(int row,int col, ChessColor color){
-        ChessComponent chessComponent = new KnightChessComponent(new ChessboardPoint(row,col),calculatePoint(row,col),color,clickController,CHESS_SIZE);
+        ChessComponent chessComponent = new KnightChessComponent(new ChessboardPoint(row,col),calculatePoint(row,col),color,clickController,CHESS_SIZE,moveController);
         chessComponent.setVisible(true);
         putChessOnBoard(chessComponent);
     }
     private void initQueenOnBoard(int row,int col, ChessColor color){
-        ChessComponent chessComponent = new QueenChessComponent(new ChessboardPoint(row,col),calculatePoint(row,col),color,clickController,CHESS_SIZE);
+        ChessComponent chessComponent = new QueenChessComponent(new ChessboardPoint(row,col),calculatePoint(row,col),color,clickController,CHESS_SIZE,moveController);
         chessComponent.setVisible(true);
         putChessOnBoard(chessComponent);
     }
     private void initKingOnBoard(int row,int col, ChessColor color){
-        ChessComponent chessComponent = new KingChessComponent(new ChessboardPoint(row,col),calculatePoint(row,col),color,clickController,CHESS_SIZE);
+        ChessComponent chessComponent = new KingChessComponent(new ChessboardPoint(row,col),calculatePoint(row,col),color,clickController,CHESS_SIZE,moveController);
         chessComponent.setVisible(true);
         putChessOnBoard(chessComponent);
     }
     private void initPawnOnBoard(int row,int col, ChessColor color){
-        ChessComponent chessComponent = new PawnChessComponent(new ChessboardPoint(row,col),calculatePoint(row,col),color,clickController,CHESS_SIZE);
+        ChessComponent chessComponent = new PawnChessComponent(new ChessboardPoint(row,col),calculatePoint(row,col),color,clickController,CHESS_SIZE,moveController);
         chessComponent.setVisible(true);
         putChessOnBoard(chessComponent);
     }
@@ -278,7 +319,10 @@ public class Chessboard extends JComponent {
     }
 
     public void loadGame(List<String> chessData) {
+        chessboardBlock();
+        storeHuiQI.clear();
         boolean test = theLoadTest( chessData);
+
 
         if(!test){
                 loadTest=false;
@@ -333,23 +377,33 @@ public class Chessboard extends JComponent {
                     }
                 }
             }
-            a = chessData.get(8).charAt(0) - '0';
+
+            String nn="";
+            for(int i=0;i<chessData.get(8).length();i++){
+                nn+=chessData.get(8).charAt(i);
+            }
+
+            a = Integer.parseInt(nn);
+
+            System.out.println(a);
 
             if (a % 2 == 1) {
                 setCurrentColor(ChessColor.WHITE);
                 lable.setText("Turn For White");
-                lable.setForeground(Color.red);
+                lable.setForeground(color);
             } else {
                 setCurrentColor(ChessColor.BLACK);
                 lable.setText("Turn For Black");
-                lable.setForeground(Color.red);
+                lable.setForeground(color);
             }
+            jb.setText("Round: "+a/2);
 
         }
         storeHuiQI.add(theStore());
     }
     public void HuiQIGame(String[] chessData) {
 
+            int pp=0;
             initiateEmptyChessboard();
 //            chessData.forEach(System.out::println);
             for (int i = 0; i < 8; i++) {
@@ -399,17 +453,24 @@ public class Chessboard extends JComponent {
                 }
             }
             for (int i=0;i<chessData[8].length();i++){
-            a += chessData[8].charAt(i) - '0';}
+                pp+=chessData[8].charAt(i)-'0';
+            }
+            a = pp;
 
             if (a % 2 == 1) {
                 setCurrentColor(ChessColor.WHITE);
                 lable.setText("Turn For White");
-                lable.setForeground(Color.red);
+                lable.setForeground(color);
             } else {
                 setCurrentColor(ChessColor.BLACK);
                 lable.setText("Turn For Black");
-                lable.setForeground(Color.red);
+                lable.setForeground(color);
             }
+
+            jb.setText("Round: "+a/2);
+        chessboardBlock();
+
+
 
 
     }
@@ -431,6 +492,7 @@ public class Chessboard extends JComponent {
         this.a = a;
     }
     public String theStore(){
+
 
         String theStringStore="";
         for (int i=0;i<8;i++){
@@ -545,6 +607,10 @@ public class Chessboard extends JComponent {
     }
 
 
+    public Color getColor() {
+        return color;
+    }
+
     public int getIntStoreHuiQI() {
         return storeHuiQI.size();
     }
@@ -568,7 +634,77 @@ public class Chessboard extends JComponent {
     public boolean isTheChessName() {
         return theChessName;
     }
-}
+
+
+    public void change(String path,String pat){
+        pa1=path;
+        pa2=pat;
+        for (int i=0;i<8;i++){
+            for (int j = 0; j < 8; j++) {
+                try {
+               chessComponents[i][j].setImage1(ImageIO.read(new File(pa1)));
+               chessComponents[i][j].setImage2(ImageIO.read(new File(pa2)));
+//            image3=ImageIO.read(new File("./images/yellow.png"));
+            }catch(Exception e) {
+                e.printStackTrace();
+            }
+
+            }
+        }
+
+        repaint();
+    }
+    public void chessboardBlock(){
+        for (int i=0;i<8;i++){
+            for (int j = 0; j < 8; j++) {
+                try {
+                    chessComponents[i][j].setImage1(ImageIO.read(new File(pa1)));
+                    chessComponents[i][j].setImage2(ImageIO.read(new File(pa2)));
+//            image3=ImageIO.read(new File("./images/yellow.png"));
+                }catch(Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }
+        repaint();
+
+
+
+    }
+
+    public boolean avoidBugChessOnChick(){
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+               if (chessComponents[i][j].isSelected()==true){
+                   return false;
+               }
+            }
+        }
+        return true;
+    }
+
+    public void stopClick(){
+        for (int i=0;i<8;i++){
+            for (int j=0;j<8;j++){
+                chessComponents[i][j].setSelected(false);
+
+
+                }
+            }
+        }
+    }
+
+
+
+//    public void printtt(){
+//        for (int i = 0; i < 8; i++) {
+//            for (int j=0;j<8;j++){
+//                ches
+//            }
+//        }
+//    }
+
 
 
 
@@ -599,6 +735,8 @@ class SoundOfChess extends Thread{
         player = new Player(buffer);
         player.play();
     }
+
+
 
 
 

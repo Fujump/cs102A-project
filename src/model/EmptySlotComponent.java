@@ -1,5 +1,6 @@
 package model;
 
+import controller.MoveController;
 import view.ChessboardPoint;
 import controller.ClickController;
 
@@ -11,8 +12,8 @@ import java.io.IOException;
  */
 public class EmptySlotComponent extends ChessComponent {
 
-    public EmptySlotComponent(ChessboardPoint chessboardPoint, Point location, ClickController listener, int size) {
-        super(chessboardPoint, location, ChessColor.NONE, listener, size);
+    public EmptySlotComponent(ChessboardPoint chessboardPoint, Point location, ClickController listener, int size, MoveController moveController) {
+        super(chessboardPoint, location, ChessColor.NONE, listener, size,moveController);
     }
 
     @Override

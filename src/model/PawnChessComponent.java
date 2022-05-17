@@ -1,5 +1,6 @@
 package model;
 
+import controller.MoveController;
 import view.ChessboardPoint;
 import controller.ClickController;
 
@@ -37,8 +38,8 @@ public class PawnChessComponent extends ChessComponent{
         }
     }
 
-    public PawnChessComponent(ChessboardPoint chessboardPoint, Point location, ChessColor color, ClickController listener, int size) {
-        super(chessboardPoint, location, color, listener, size);
+    public PawnChessComponent(ChessboardPoint chessboardPoint, Point location, ChessColor color, ClickController listener, int size, MoveController moveController) {
+        super(chessboardPoint, location, color, listener, size,moveController);
         initiatePawnImage(color);
     }
 

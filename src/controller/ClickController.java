@@ -53,4 +53,17 @@ public class ClickController {
         return chessComponent.getChessColor() != chessboard.getCurrentColor() &&
                 first.canMoveTo(chessboard.getChessComponents(), chessComponent.getChessboardPoint());
     }
+
+
+
+//
+//    public Chessboard retunChess(){
+//        for (int i=0;i<8;i++){
+//            for (int j = 0; j < 8; j++) {
+//                chessboard.
+//
+//            }
+//        }
+//    }
+
 }

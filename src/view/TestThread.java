@@ -12,7 +12,7 @@ public class TestThread extends Thread {
 
             try {
                 if (a<chesB.getIntStoreHuiQI()){
-                sleep(2*1000);
+                sleep(1*1000);
                 String[] data=chesB.HUiFang(a).split("\n");
                 chesB.HuiQIGame(data);
                 chesB.repaint();

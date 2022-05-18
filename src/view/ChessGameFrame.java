@@ -357,18 +357,18 @@ public class ChessGameFrame extends JFrame {
             if(s=="主题1"){
                 String path="./images/back2.png";
                 addChangeTheme(path);
-                chessboard.change("./images/slave.png","./images/smallYe.png");
+//                chessboard.change("./images/slave.png","./images/smallYe.png");
 
             }
             else if(s=="主题2"){
                 String path="./images/back5.png";
                 addChangeTheme(path);
-                chessboard.change("./images/blacksmall.png","./images/smallYe.png");
+//                chessboard.change("./images/blacksmall1.png","./images/smallYe.png");
             }
             else if (s=="默认"){
                 String path="./images/21.png";
                 addChangeTheme(path);
-                chessboard.change("./images/white11.png","./images/blacksmall.png");
+//                chessboard.change("./images/white111.png","./images/blacksmall.png");
             }
         });
     }

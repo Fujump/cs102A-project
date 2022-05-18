@@ -88,8 +88,8 @@ public class Chessboard extends JComponent {
         color=new Color(10,100,255);
 
 
-        pa1="./images/white11.png";
-        pa2="./images/blacksmall.png";
+        pa1="./images/white110.png";
+        pa2="./images/blacksmall110.png";
 
 
 
@@ -227,7 +227,7 @@ public class Chessboard extends JComponent {
 //            huiQi.add(record);
             remove(chess2);
 
-            add(chess2 = new EmptySlotComponent(chess2.getChessboardPoint(), chess2.getLocation(), clickController, CHESS_SIZE,moveController));
+            add(chess2 = new EmptySlotComponent(chess2.getChessboardPoint(), chess2.getLocation(), clickController, CHESS_SIZE,this,moveController));
         }
         chess1.swapLocation(chess2);
         int row1 = chess1.getChessboardPoint().getX(), col1 = chess1.getChessboardPoint().getY();
@@ -264,7 +264,7 @@ public class Chessboard extends JComponent {
     public void initiateEmptyChessboard() {
         for (int i = 0; i < chessComponents.length; i++) {
             for (int j = 0; j < chessComponents[i].length; j++) {
-                putChessOnBoard(new EmptySlotComponent(new ChessboardPoint(i, j), calculatePoint(i, j), clickController, CHESS_SIZE,moveController));
+                putChessOnBoard(new EmptySlotComponent(new ChessboardPoint(i, j), calculatePoint(i, j), clickController, CHESS_SIZE,this,moveController));
             }
         }
     }
@@ -276,32 +276,32 @@ public class Chessboard extends JComponent {
     }
 
     private void initRookOnBoard(int row, int col, ChessColor color) {
-        ChessComponent chessComponent = new RookChessComponent(new ChessboardPoint(row, col), calculatePoint(row, col), color, clickController, CHESS_SIZE,moveController);
+        ChessComponent chessComponent = new RookChessComponent(new ChessboardPoint(row, col), calculatePoint(row, col), color, clickController, CHESS_SIZE,this,moveController);
         chessComponent.setVisible(true);
         putChessOnBoard(chessComponent);
     }
     private void initBishopOnBoard(int row,int col, ChessColor color){
-        ChessComponent chessComponent = new BishopChessComponent(new ChessboardPoint(row,col),calculatePoint(row,col),color,clickController,CHESS_SIZE,moveController);
+        ChessComponent chessComponent = new BishopChessComponent(new ChessboardPoint(row,col),calculatePoint(row,col),color,clickController,CHESS_SIZE,this,moveController);
         chessComponent.setVisible(true);
         putChessOnBoard(chessComponent);
     }
     private void initKnightOnBoard(int row,int col, ChessColor color){
-        ChessComponent chessComponent = new KnightChessComponent(new ChessboardPoint(row,col),calculatePoint(row,col),color,clickController,CHESS_SIZE,moveController);
+        ChessComponent chessComponent = new KnightChessComponent(new ChessboardPoint(row,col),calculatePoint(row,col),color,clickController,CHESS_SIZE,this,moveController);
         chessComponent.setVisible(true);
         putChessOnBoard(chessComponent);
     }
     private void initQueenOnBoard(int row,int col, ChessColor color){
-        ChessComponent chessComponent = new QueenChessComponent(new ChessboardPoint(row,col),calculatePoint(row,col),color,clickController,CHESS_SIZE,moveController);
+        ChessComponent chessComponent = new QueenChessComponent(new ChessboardPoint(row,col),calculatePoint(row,col),color,clickController,CHESS_SIZE,this,moveController);
         chessComponent.setVisible(true);
         putChessOnBoard(chessComponent);
     }
     private void initKingOnBoard(int row,int col, ChessColor color){
-        ChessComponent chessComponent = new KingChessComponent(new ChessboardPoint(row,col),calculatePoint(row,col),color,clickController,CHESS_SIZE,moveController);
+        ChessComponent chessComponent = new KingChessComponent(new ChessboardPoint(row,col),calculatePoint(row,col),color,clickController,CHESS_SIZE,this,moveController);
         chessComponent.setVisible(true);
         putChessOnBoard(chessComponent);
     }
     private void initPawnOnBoard(int row,int col, ChessColor color){
-        ChessComponent chessComponent = new PawnChessComponent(new ChessboardPoint(row,col),calculatePoint(row,col),color,clickController,CHESS_SIZE,moveController);
+        ChessComponent chessComponent = new PawnChessComponent(new ChessboardPoint(row,col),calculatePoint(row,col),color,clickController,CHESS_SIZE,this,moveController);
         chessComponent.setVisible(true);
         putChessOnBoard(chessComponent);
     }

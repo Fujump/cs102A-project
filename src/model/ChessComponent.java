@@ -1,6 +1,7 @@
 package model;
 
 import controller.MoveController;
+import view.Chessboard;
 import view.ChessboardPoint;
 import controller.ClickController;
 
@@ -12,6 +13,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * 这个类是一个抽象类，主要表示8*8棋盘上每个格子的棋子情况，当前有两个子类继承它，分别是EmptySlotComponent(空棋子)和RookChessComponent(车)。
@@ -36,7 +38,7 @@ public abstract class ChessComponent extends JComponent {
     private static final Dimension CHESSGRID_SIZE = new Dimension(1080 / 4 * 3 / 8, 1080 / 4 * 3 / 8);
     private static final Color[] BACKGROUND_COLORS = {Color.WHITE, Color.BLACK};
 
-
+    private Chessboard chessboard;
     private boolean whetherMoveTo;
     /**
      * handle click event
@@ -57,7 +59,8 @@ public abstract class ChessComponent extends JComponent {
     private boolean selected;
     private boolean forMoveWatch;
 
-    protected ChessComponent(ChessboardPoint chessboardPoint, Point location, ChessColor chessColor, ClickController clickController, int size,MoveController moveController) {
+
+    protected ChessComponent(ChessboardPoint chessboardPoint, Point location, ChessColor chessColor, ClickController clickController, int size,Chessboard chessboard,MoveController moveController) {
         enableEvents(AWTEvent.MOUSE_EVENT_MASK);
         setLocation(location);
         setSize(size, size);
@@ -67,9 +70,10 @@ public abstract class ChessComponent extends JComponent {
         this.forMoveWatch=false;
         this.clickController = clickController;
         this.moveController=moveController;
+        this.chessboard=chessboard;
         try {
-            image1=ImageIO.read(new File("./images/white11.png"));
-            image2=ImageIO.read(new File("./images/blacksmall.png"));
+            image1=ImageIO.read(new File("./images/white110.png"));
+            image2=ImageIO.read(new File("./images/blacksmall110.png"));
 //            image3=ImageIO.read(new File("./images/yellow.png"));
         }catch(Exception e) {
             e.printStackTrace();
@@ -175,6 +179,84 @@ public abstract class ChessComponent extends JComponent {
      */
     public abstract boolean canMoveTo(ChessComponent[][] chessboard, ChessboardPoint destination);
 
+
+    public abstract ArrayList<ChessboardPoint> canMoveTo(Chessboard chessboard);
+    public abstract ArrayList<ChessboardPoint> canMoveTo(ChessComponent[][] chessComponents);
+    public ArrayList<ChessboardPoint> CanMoveTobubeijiang(Chessboard chessboard){
+        ArrayList<ChessboardPoint> canMoveTobubeijiang=new ArrayList<>();
+
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                ChessComponent[][] chessComponents0 = new ChessComponent[8][8];
+                for (int k = 0; k < 8; k++) {
+                    for (int l = 0; l < 8; l++) {
+                        //chessComponents0[k][l]=chessboard.getChessComponents()[k][l];
+                        chessComponents0[k][l] = this.chessboard.getChessComponents()[k][l];
+                    }
+                }
+                // System.out.print("++++++++++++++++++++++++++++++++++++++++");
+
+
+                ChessboardPoint source=new ChessboardPoint(this.chessboardPoint.getX(), this.chessboardPoint.getY());
+                this.setChessboardPoint(new ChessboardPoint(i,j));
+                chessComponents0[i][j]=this;
+                //吧原来的位置变成了empty
+                chessComponents0[source.getX()][source.getY()]=new EmptySlotComponent(source,this.getLocation(),clickController,60,chessboard,moveController);
+
+//               this.swapLocation(chessComponents0[i][j]);
+//                int row1 = getChessboardPoint().getX(), col1 = getChessboardPoint().getY();
+//                chessComponents0[row1][col1] = this;
+//                int row2 = chessboard.getChessComponents()[i][j].getChessboardPoint().getX(),
+//                        col2 = chessboard.getChessComponents()[i][j].getChessboardPoint().getY();
+//                chessComponents0[row2][col2] = chessboard.getChessComponents()[i][j];
+
+                int KingX=-1,KingY=-1;
+                for (int k = 0; k < 8; k++) {
+                    for (int l = 0; l < 8; l++) {
+                        if ((chessComponents0[k][l] instanceof KingChessComponent)&&
+                                chessComponents0[k][l].getChessColor()==chessColor){
+                            KingX=chessComponents0[k][l].chessboardPoint.getX();
+                            KingY=chessComponents0[k][l].chessboardPoint.getY();
+                        }
+                    }
+                }
+                boolean isKingAttacked=false;
+                for (int k = 0; k < 8; k++) {
+                    for (int l = 0; l < 8; l++) {
+                        if (chessComponents0[k][l].getChessColor()!=chessColor) {
+                            for (int m = 0; m < chessComponents0[k][l].canMoveTo(chessComponents0).size(); m++) {
+                                if (chessComponents0[k][l].canMoveTo(chessComponents0).get(m).getX() == KingX
+                                        && chessComponents0[k][l].canMoveTo(chessComponents0).get(m).getY() == KingY) {
+                                    isKingAttacked=true;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (!isKingAttacked) {
+                    canMoveTobubeijiang.add(new ChessboardPoint(i, j) );
+                }
+                this.setChessboardPoint(source);
+            }
+        }
+        return canMoveTobubeijiang;
+    }
+    public ArrayList<ChessboardPoint> FinalCanMoveTo(Chessboard chessboard){
+        ArrayList<ChessboardPoint> finalCanMoveTo=new ArrayList<>();
+        ArrayList<ChessboardPoint> list1=canMoveTo(chessboard);
+        ArrayList<ChessboardPoint> list2=CanMoveTobubeijiang(chessboard);
+        for (int i = 0; i < list1.size(); i++) {
+            for (int j = 0; j < list2.size(); j++) {
+                if (list1.get(i).getX()==list2.get(j).getX()&&
+                        list1.get(i).getY()==list2.get(j).getY()){
+                    finalCanMoveTo.add(list1.get(i));
+                }
+            }
+        }
+        return finalCanMoveTo;
+    }
+
     /**
      * 这个方法主要用于加载一些特定资源，如棋子图片等等。
      *
@@ -195,16 +277,16 @@ public abstract class ChessComponent extends JComponent {
     protected void paintComponent(Graphics g) {
         super.paintComponents(g);
 
-//        System.out.printf("repaint chess [%d,%d]\n", chessboardPoint.getX(), chessboardPoint.getY()); //取消打印
-//        Color squareColor = BACKGROUND_COLORS[(chessboardPoint.getX() + chessboardPoint.getY()) % 2];
-//        g.setColor(squareColor);
+        System.out.printf("repaint chess [%d,%d]\n", chessboardPoint.getX(), chessboardPoint.getY()); //取消打印
+        Color squareColor = BACKGROUND_COLORS[(chessboardPoint.getX() + chessboardPoint.getY()) % 2];
+        g.setColor(squareColor);
         if ((chessboardPoint.getX()+chessboardPoint.getY())%2==0){
             g.drawImage(image1, 0,0,this.getWidth(),this.getHeight() ,null);
         }
         else {
             g.drawImage(image2, 0,0,this.getWidth(),this.getHeight() ,null);
         }
-        //        g.fillRect(0, 0, this.getWidth(), this.getHeight());
+                g.fillRect(0, 0, this.getWidth(), this.getHeight());
     }
 
 

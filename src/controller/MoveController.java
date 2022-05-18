@@ -23,15 +23,15 @@ public class MoveController {
         try {
             path1=chessCompent.getImage1();
             path2=chessCompent.getImage2();
-            chess.setImage1(ImageIO.read(new File("./images/move.png")));
-            chess.setImage2(ImageIO.read(new File("./images/move.png")));
+            chess.setImage1(ImageIO.read(new File("./images/move10.png")));
+            chess.setImage2(ImageIO.read(new File("./images/move10.png")));
 
         }catch(Exception e) {
             e.printStackTrace();
         }
 
 
-        chess.repaint();
+      chess.repaint();
 
 
     }

@@ -1,6 +1,7 @@
 package model;
 
 import controller.MoveController;
+import view.Chessboard;
 import view.ChessboardPoint;
 import controller.ClickController;
 
@@ -8,6 +9,8 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class QueenChessComponent extends ChessComponent{
     private static Image Queen_WHITE;
@@ -38,8 +41,8 @@ public class QueenChessComponent extends ChessComponent{
         }
     }
 
-    public QueenChessComponent(ChessboardPoint chessboardPoint, Point location, ChessColor color, ClickController listener, int size, MoveController moveController) {
-        super(chessboardPoint, location, color, listener, size,moveController);
+    public QueenChessComponent(ChessboardPoint chessboardPoint, Point location, ChessColor color, ClickController listener, int size, Chessboard chessboard, MoveController moveController) {
+        super(chessboardPoint, location, color, listener, size,chessboard,moveController);
         initiateQueenImage(color);
     }
 
@@ -72,6 +75,104 @@ public class QueenChessComponent extends ChessComponent{
             }
         }else{return false;}
         return true;
+    }
+    public ArrayList<ChessboardPoint> canMoveTo(Chessboard chessboard){
+        ChessboardPoint source = getChessboardPoint();
+        ArrayList<ChessboardPoint> canMoveTo=new ArrayList<>();
+        for (int i = 0; i < 8; i++) {
+           a: for (int j = 0; j < 8; j++) {
+                if (chessboard.getChessComponents()[i][j].getChessColor() != this.getChessColor()) {
+                    if (Math.abs(source.getX() - i) == Math.abs(source.getY() - j)) {
+                        int signDetaX, signDetaY;
+                        if (i >= source.getX()) {
+                            signDetaX = 1;
+                        } else {
+                            signDetaX = -1;
+                        }
+                        if (j >= source.getY()) {
+                            signDetaY = 1;
+                        } else {
+                            signDetaY = -1;
+                        }
+                        for (int k = 1; k < Math.abs(source.getX() - i); k++) {
+                            if (!(chessboard.getChessComponents()[source.getX() + signDetaX * k][source.getY() + signDetaY * k] instanceof EmptySlotComponent)) {
+                                continue a;
+                            }
+                        }
+                    } else if (source.getX() == i) {
+                        int row = source.getX();
+                        for (int col = Math.min(source.getY(), j) + 1;
+                             col < Math.max(source.getY(), j); col++) {
+                            if (!(chessboard.getChessComponents()[row][col] instanceof EmptySlotComponent)) {
+                                continue a;
+                            }
+                        }
+                    } else if (source.getY() == j) {
+                        int col = source.getY();
+                        for (int row = Math.min(source.getX(), i) + 1;
+                             row < Math.max(source.getX(), i); row++) {
+                            if (!(chessboard.getChessComponents()[row][col] instanceof EmptySlotComponent)) {
+                                continue a;
+                            }
+                        }
+                    } else {
+                        continue;
+                    }
+                    canMoveTo.add(new ChessboardPoint(i, j));
+                }
+            }
+        }
+        return canMoveTo;
+    }
+
+    @Override
+    public ArrayList<ChessboardPoint> canMoveTo(ChessComponent[][] chessComponents) {
+        ChessboardPoint source = getChessboardPoint();
+        ArrayList<ChessboardPoint> canMoveTo=new ArrayList<>();
+        for (int i = 0; i < 8; i++) {
+           a: for (int j = 0; j < 8; j++) {
+                if (chessComponents[i][j].getChessColor() != this.getChessColor()) {
+                    if (Math.abs(source.getX() - i) == Math.abs(source.getY() - j)) {
+                        int signDetaX, signDetaY;
+                        if (i >= source.getX()) {
+                            signDetaX = 1;
+                        } else {
+                            signDetaX = -1;
+                        }
+                        if (j >= source.getY()) {
+                            signDetaY = 1;
+                        } else {
+                            signDetaY = -1;
+                        }
+                        for (int k = 1; k < Math.abs(source.getX() - i); k++) {
+                            if (!(chessComponents[source.getX() + signDetaX * k][source.getY() + signDetaY * k] instanceof EmptySlotComponent)) {
+                                continue a;
+                            }
+                        }
+                    } else if (source.getX() == i) {
+                        int row = source.getX();
+                        for (int col = Math.min(source.getY(), j) + 1;
+                             col < Math.max(source.getY(), j); col++) {
+                            if (!(chessComponents[row][col] instanceof EmptySlotComponent)) {
+                                continue a;
+                            }
+                        }
+                    } else if (source.getY() == j) {
+                        int col = source.getY();
+                        for (int row = Math.min(source.getX(), i) + 1;
+                             row < Math.max(source.getX(), i); row++) {
+                            if (!(chessComponents[row][col] instanceof EmptySlotComponent)) {
+                                continue a;
+                            }
+                        }
+                    } else {
+                        continue;
+                    }
+                    canMoveTo.add(new ChessboardPoint(i, j));
+                }
+            }
+        }
+        return canMoveTo;
     }
 
     protected void paintComponent(Graphics g) {

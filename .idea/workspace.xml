@@ -2,15 +2,24 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="213cbee4-476c-40ae-b03a-b4719902e84a" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/blacksmall.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/white11.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/ChessDemo/model/ChessComponent.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ChessDemo/model/ChessComponent.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/ChessDemo/view/ChessGameFrame.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ChessDemo/view/ChessGameFrame.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/ChessDemo/view/Chessboard.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ChessDemo/view/Chessboard.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ChessDemo/view/Menu.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ChessDemo/view/Menu.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ChessDemo/view/SoundOfChess.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ChessDemo/view/SoundOfChess.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controller/ClickController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/controller/ClickController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controller/MoveController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/controller/MoveController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/BishopChessComponent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/BishopChessComponent.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/model/ChessComponent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/ChessComponent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/EmptySlotComponent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/EmptySlotComponent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/KingChessComponent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/KingChessComponent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/KnightChessComponent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/KnightChessComponent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/PawnChessComponent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/PawnChessComponent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/QueenChessComponent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/QueenChessComponent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/RookChessComponent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/RookChessComponent.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/view/ChessGameFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/view/ChessGameFrame.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/view/Chessboard.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/view/Chessboard.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/view/Menu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/view/Menu.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,7 +57,7 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../ProjectChess1" />
     <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />

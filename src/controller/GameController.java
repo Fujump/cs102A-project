@@ -1,14 +1,15 @@
 package controller;
 
+import model.ChessColor;
+import model.ChessComponent;
+import model.KingChessComponent;
 import view.Chessboard;
+import view.ChessboardPoint;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 public class GameController {
     private Chessboard chessboard;
@@ -27,5 +28,6 @@ public class GameController {
         }
         return null;
     }
+
 
 }

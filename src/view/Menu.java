@@ -32,17 +32,22 @@ public class Menu extends JFrame implements ActionListener {
 
             this.setSize(400,400);
 
-            this.setLocation(300,400);
+            this.setLocation(300,200);
             setLayout(null);
+            Color coo=new Color(0,90,90);
 
             buttonStart = new JButton("Start");
             buttonStart.setSize(100,50);
-            buttonStart.setLocation(200,30);
+            buttonStart.setFont(new Font("Rockwell", Font.BOLD, 25));
+            buttonStart.setForeground(coo);
+            buttonStart.setLocation(150,150);
 
 
             buttonOver = new JButton("Over");
             buttonOver.setSize(100,50);
-            buttonOver.setLocation(200,90);
+            buttonOver.setFont(new Font("Rockwell", Font.BOLD, 25));
+            buttonOver.setForeground(coo);
+            buttonOver.setLocation(150,250);
 
             this.add(buttonStart);
 
@@ -51,7 +56,7 @@ public class Menu extends JFrame implements ActionListener {
             buttonStart.addActionListener(this);
 
             buttonOver.addActionListener(this);
-            ImageIcon imag=new ImageIcon("images/back2.png");
+            ImageIcon imag=new ImageIcon("./images/400004.png");
 //        JLabel jb=new JLabel(imag);
 //
 //        jb.setBounds(0,0,getWidth(),getHeight());
@@ -116,7 +121,7 @@ public class Menu extends JFrame implements ActionListener {
             if(e.getSource() == buttonStart){
 
                 this.dispose();
-                String file = "F:\\music.mp3";
+                String file = "./Music/music.mp3";
                     Music play = new Music(file);
                     // 开启
                     play.start();

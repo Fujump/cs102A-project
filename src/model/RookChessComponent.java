@@ -1,5 +1,7 @@
 package model;
 
+import controller.MoveController;
+import view.Chessboard;
 import view.ChessboardPoint;
 import controller.ClickController;
 
@@ -7,6 +9,8 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 这个类表示国际象棋里面的车
@@ -60,8 +64,8 @@ public class RookChessComponent extends ChessComponent {
         }
     }
 
-    public RookChessComponent(ChessboardPoint chessboardPoint, Point location, ChessColor color, ClickController listener, int size) {
-        super(chessboardPoint, location, color, listener, size);
+    public RookChessComponent(ChessboardPoint chessboardPoint, Point location, ChessColor color, ClickController listener, int size, Chessboard chessboard, MoveController moveController) {
+        super(chessboardPoint, location, color, listener, size,chessboard,moveController);
         initiateRookImage(color);
     }
 
@@ -96,6 +100,72 @@ public class RookChessComponent extends ChessComponent {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public ArrayList<ChessboardPoint> canMoveTo(Chessboard chessboard) {
+        ChessboardPoint source = getChessboardPoint();
+        ArrayList<ChessboardPoint> canMoveTo=new ArrayList<>();
+        for (int i = 0; i < 8; i++) {
+           a: for (int j = 0; j < 8; j++) {
+                if (chessboard.getChessComponents()[i][j].getChessColor() != this.getChessColor()) {
+                    if (source.getX() == i) {
+                        int row = source.getX();
+                        for (int col = Math.min(source.getY(), j) + 1;
+                             col < Math.max(source.getY(), j); col++) {
+                            if (!(chessboard.getChessComponents()[row][col] instanceof EmptySlotComponent)) {
+                                continue a;
+                            }
+                        }
+                    } else if (source.getY() == j) {
+                        int col = source.getY();
+                        for (int row = Math.min(source.getX(), i) + 1;
+                             row < Math.max(source.getX(), i); row++) {
+                            if (!(chessboard.getChessComponents()[row][col] instanceof EmptySlotComponent)) {
+                                continue a;
+                            }
+                        }
+                    } else { // Not on the same row or the same column.
+                        continue;
+                    }
+                    canMoveTo.add(new ChessboardPoint(i, j));
+                }
+            }
+        }
+        return canMoveTo;
+    }
+
+    @Override
+    public ArrayList<ChessboardPoint> canMoveTo(ChessComponent[][] chessComponents) {
+        ChessboardPoint source = getChessboardPoint();
+        ArrayList<ChessboardPoint> canMoveTo=new ArrayList<>();
+        for (int i = 0; i < 8; i++) {
+           a: for (int j = 0; j < 8; j++) {
+                if (chessComponents[i][j].getChessColor() != this.getChessColor()) {
+                    if (source.getX() == i) {
+                        int row = source.getX();
+                        for (int col = Math.min(source.getY(), j) + 1;
+                             col < Math.max(source.getY(), j); col++) {
+                            if (!(chessComponents[row][col] instanceof EmptySlotComponent)) {
+                                continue a;
+                            }
+                        }
+                    } else if (source.getY() == j) {
+                        int col = source.getY();
+                        for (int row = Math.min(source.getX(), i) + 1;
+                             row < Math.max(source.getX(), i); row++) {
+                            if (!(chessComponents[row][col] instanceof EmptySlotComponent)) {
+                                continue a;
+                            }
+                        }
+                    } else { // Not on the same row or the same column.
+                        continue;
+                    }
+                    canMoveTo.add(new ChessboardPoint(i, j));
+                }
+            }
+        }
+        return canMoveTo;
     }
 
     /**

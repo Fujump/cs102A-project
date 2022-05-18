@@ -1,5 +1,7 @@
 package model;
 
+import controller.MoveController;
+import view.Chessboard;
 import view.ChessboardPoint;
 import controller.ClickController;
 
@@ -7,6 +9,8 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class KnightChessComponent extends ChessComponent{
     private static Image Knight_WHITE;
@@ -37,8 +41,8 @@ public class KnightChessComponent extends ChessComponent{
         }
     }
 
-    public KnightChessComponent(ChessboardPoint chessboardPoint, Point location, ChessColor color, ClickController listener, int size) {
-        super(chessboardPoint, location, color, listener, size);
+    public KnightChessComponent(ChessboardPoint chessboardPoint, Point location, ChessColor color, ClickController listener, int size, Chessboard chessboard, MoveController moveController) {
+        super(chessboardPoint, location, color, listener, size,chessboard,moveController);
         initiateKnightImage(color);
     }
 
@@ -49,6 +53,40 @@ public class KnightChessComponent extends ChessComponent{
             return true;
         }
         return false;
+    }
+    public ArrayList<ChessboardPoint> canMoveTo(Chessboard chessboard){
+        ChessboardPoint source = getChessboardPoint();
+        ArrayList<ChessboardPoint> canMoveTo=new ArrayList<>();
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (chessboard.getChessComponents()[i][j].getChessColor() != this.getChessColor()) {
+                    if ((Math.abs(source.getX() - i) == 1 && Math.abs(source.getY() - j) == 2) ||
+                            (Math.abs(source.getX() - i) == 2 && Math.abs(source.getY() - j) == 1)) {
+                        canMoveTo.add(new ChessboardPoint(i, j));
+                    }
+                    continue;
+                }
+            }
+        }
+        return canMoveTo;
+    }
+
+    @Override
+    public ArrayList<ChessboardPoint> canMoveTo(ChessComponent[][] chessComponents) {
+        ChessboardPoint source = getChessboardPoint();
+        ArrayList<ChessboardPoint> canMoveTo=new ArrayList<>();
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (chessComponents[i][j].getChessColor() != this.getChessColor()) {
+                    if ((Math.abs(source.getX() - i) == 1 && Math.abs(source.getY() - j) == 2) ||
+                            (Math.abs(source.getX() - i) == 2 && Math.abs(source.getY() - j) == 1)) {
+                        canMoveTo.add(new ChessboardPoint(i, j));
+                    }
+                    continue;
+                }
+            }
+        }
+        return canMoveTo;
     }
 
     protected void paintComponent(Graphics g) {

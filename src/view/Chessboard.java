@@ -454,10 +454,11 @@ public class Chessboard extends JComponent {
                     }
                 }
             }
+            String aaa="";
             for (int i=0;i<chessData[8].length();i++){
-                pp+=chessData[8].charAt(i)-'0';
+               aaa+=chessData[8].charAt(i);
             }
-            a = pp;
+            a = Integer.parseInt(aaa);
 
             if (a % 2 == 1) {
                 setCurrentColor(ChessColor.WHITE);

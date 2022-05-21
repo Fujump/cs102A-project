@@ -62,8 +62,9 @@ public class Chessboard extends JComponent {
 
     private Color color;
 
-
-
+    public ArrayList<String> getStoreHuiQI() {
+        return storeHuiQI;
+    }
 
     public void setJb(JLabel jb) {
         this.jb = jb;
@@ -88,8 +89,8 @@ public class Chessboard extends JComponent {
         color=new Color(10,100,255);
 
 
-        pa1="./images/white110.png";
-        pa2="./images/blacksmall110.png";
+        pa1="./images/white11.png";
+        pa2="./images/blacksmall.png";
 
 
 
@@ -319,7 +320,7 @@ public class Chessboard extends JComponent {
     }
 
     public void loadGame(List<String> chessData) {
-        chessboardBlock();
+
         storeHuiQI.clear();
         boolean test = theLoadTest( chessData);
 
@@ -400,6 +401,7 @@ public class Chessboard extends JComponent {
 
         }
         storeHuiQI.add(theStore());
+        chessboardBlock();
     }
     public void HuiQIGame(String[] chessData) {
 
@@ -452,10 +454,11 @@ public class Chessboard extends JComponent {
                     }
                 }
             }
+            String aaa="";
             for (int i=0;i<chessData[8].length();i++){
-                pp+=chessData[8].charAt(i)-'0';
+               aaa+=chessData[8].charAt(i);
             }
-            a = pp;
+            a = Integer.parseInt(aaa);
 
             if (a % 2 == 1) {
                 setCurrentColor(ChessColor.WHITE);

@@ -5,17 +5,35 @@ import model.ChessColor;
 import model.ChessComponent;
 import model.KingChessComponent;
 import view.Chessboard;
+import controller.GameController;
 import view.ChessboardPoint;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 
+//class GameOver extends JFrame{
+//    GameOver(){
+//        setLocation(600,300);
+//        setSize(250,100);
+//        setLayout(new BorderLayout());
+//        setDefaultCloseOperation(EXIT_ON_CLOSE);
+//        setVisible(true);
+//    }
+//}
 
 public class ClickController {
     private final Chessboard chessboard;
     private ChessComponent first;
+    private GameController gameController;
 
-    public ClickController(Chessboard chessboard) {this.chessboard = chessboard;}
+    public ClickController(Chessboard chessboard) {
+        this.chessboard = chessboard;
+    }
+
+    public void setGameController(GameController gameController) {
+        this.gameController = gameController;
+    }
 
     public void onClick(ChessComponent chessComponent) {
         if (first == null) {
@@ -33,34 +51,56 @@ public class ClickController {
             } else if (handleSecond(chessComponent)) {
                 //repaint in swap chess method.
                 chessboard.swapChessComponents(first, chessComponent);
-                chessboard.swapColor();
-
                 first.setSelected(false);
                 first = null;
-            }
-        }
 
-        boolean winOrNotjs=WinOrNotjs(chessboard.getCurrentColor());
-        boolean heqiwzkd=Heqiwzkd(chessboard.getCurrentColor());
-        if (winOrNotjs){
+                boolean winOrNotjs=WinOrNotjs(chessboard.getCurrentColor());
+                boolean heqiwzkd=Heqiwzkd(chessboard.getCurrentColor());
+                boolean heqisbcf=Heqisbcf(chessboard);
+                if (winOrNotjs){
 //                    GameOver gameOver=new GameOver();
-            String winner=String.format("%s side win",chessboard.getCurrentColor());
+                    String winner=String.format("%s side win",chessboard.getCurrentColor());
 //                    JLabel outcome=new JLabel( winner);
 //                    gameOver.add(outcome,BorderLayout.CENTER);
 
 
 
-            JOptionPane.showMessageDialog(null, winner, "Warnings", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(null, winner, "GameOver", JOptionPane.WARNING_MESSAGE);
 //                    JDialog gameOver=new JDialog();
-            chessboard.Restarted();
-            chessboard.repaint();
-        }
-        if(heqiwzkd){
+                    chessboard.swapColor();
+                    chessboard.Restarted();
+                    chessboard.repaint();
+                }
+                if(heqiwzkd){
 //                     GameOver gameOver=new GameOver();
-//                     String outcome="   无子可动和棋";
+                    String outcome="无子可动和棋";
 //                     JLabel output=new JLabel(outcome);
-            JOptionPane.showMessageDialog(null, "无子可动和棋", "Warnings", JOptionPane.WARNING_MESSAGE);
 //                     gameOver.add(output,BorderLayout.CENTER);
+
+                    JOptionPane.showMessageDialog(null,outcome , "GameOver", JOptionPane.WARNING_MESSAGE);
+                    chessboard.swapColor();
+                    chessboard.Restarted();
+                    chessboard.repaint();
+                }
+                if(heqisbcf){
+//                     GameOver gameOver=new GameOver();
+                    String outcome="三步重复和棋";
+//                     JLabel output=new JLabel(outcome);
+//                     gameOver.add(output,BorderLayout.CENTER);
+
+                    JOptionPane.showMessageDialog(null,outcome , "GameOver", JOptionPane.WARNING_MESSAGE);
+                    chessboard.swapColor();
+                    chessboard.Restarted();
+                    chessboard.repaint();
+                }
+                if (IsKingAttacked(getNextColor())){
+                    String outcome=String.format("%s side king is attacked!",getNextColor());
+                    JOptionPane.showMessageDialog(null, outcome, "Warnings", JOptionPane.WARNING_MESSAGE);
+                }
+
+
+                chessboard.swapColor();
+            }
         }
     }
 
@@ -68,6 +108,7 @@ public class ClickController {
      * @param chessComponent 目标选取的棋子
      * @return 目标选取的棋子是否与棋盘记录的当前行棋方颜色相同
      */
+
 
     private boolean handleFirst(ChessComponent chessComponent) {
         return chessComponent.getChessColor() == chessboard.getCurrentColor();
@@ -82,7 +123,6 @@ public class ClickController {
         return chessComponent.getChessColor() != chessboard.getCurrentColor() &&
                 FinalCanMoveTo(chessboard.getChessComponents(), chessComponent.getChessboardPoint());
     }
-
 
     public boolean IsKingAttacked(ChessColor beijiangfang){
         int KingX=-1,KingY=-1;
@@ -110,6 +150,11 @@ public class ClickController {
             }
         }
         return isKingAttacked;
+    }
+
+    public ChessColor getNextColor(){
+        if (chessboard.getCurrentColor()==ChessColor.WHITE){return ChessColor.BLACK;}
+        else{return ChessColor.WHITE;}
     }
 
     //    public ChessComponent FindKing(ChessColor chessColor){
@@ -156,7 +201,7 @@ public class ClickController {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 if (chessboard.getChessComponents()[i][j].getChessColor()==beijiangfang&&
-                        !(chessboard.getChessComponents()[i][j].FinalCanMoveTo(chessboard).isEmpty())){
+                        !(chessboard.getChessComponents()[i][j].CanMoveTobubeijiang(chessboard).isEmpty())){
                     canyingjiang=true;
                 }
             }
@@ -175,15 +220,29 @@ public class ClickController {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 if (chessboard.getChessComponents()[i][j].getChessColor()!=currentColor){
-                    if (!chessboard.getChessComponents()[i][j].FinalCanMoveTo(chessboard).isEmpty()){wzkd= false;}
+                    if (!chessboard.getChessComponents()[i][j].CanMoveTobubeijiang(chessboard).isEmpty()){wzkd= false;}
                 }
             }
         }
         return wzkd&&!isKingAttacked;
-    }//不被将时
+    }
+    public boolean Heqisbcf(Chessboard chessboard){
+        ArrayList<String> historyList=chessboard.getStoreHuiQI();
+        int size=historyList.size();
+        System.out.print(size+"+++++++++++++++++++++++");
+        for(int i=0;i<size;i++){
+           // System.out.print(historyList.get(i));
+        }
+        if (size>=10&&historyList.get(size-1).equals(historyList.get(size-5))&&historyList.get(size-1).equals(historyList.get(size-9))){
+            //System.out.print(size+"+++++++++++++++++++++++");
+            return true;
+        }
+        return false;
+    }
+
 
     public boolean FinalCanMoveTo(ChessComponent[][] chessComponents, ChessboardPoint chessboardPoint){
-        ArrayList<ChessboardPoint> finalList=first.FinalCanMoveTo(chessboard);
+        ArrayList<ChessboardPoint> finalList=first.CanMoveTobubeijiang(chessboard);
         for (int i = 0; i < finalList.size(); i++) {
             if (chessboardPoint.getX()==finalList.get(i).getX()&&
                     chessboardPoint.getY()==finalList.get(i).getY()){
@@ -192,14 +251,4 @@ public class ClickController {
         }
         return false;
     }
-//
-//    public Chessboard retunChess(){
-//        for (int i=0;i<8;i++){
-//            for (int j = 0; j < 8; j++) {
-//                chessboard.
-//
-//            }
-//        }
-//    }
-
 }
